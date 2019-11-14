@@ -39,8 +39,8 @@ function rangeMapper([x, y]) {
       tileset = ts;
     }
   }
-  const tileX = x - ((x - tileset.minX) % (50 * 255));
-  const tileY = y - ((y - tileset.minY) % (50 * 255));
+  const tileX = x - ((x - tileset.minX) % (TILE_RESOLUTION * 255));
+  const tileY = y - ((y - tileset.minY) % (TILE_RESOLUTION * 255));
   return { x: tileX, y: tileY, tileset };
 }
 
@@ -57,6 +57,11 @@ const ROTATION_SPEED = 0.05;
 // amount to increase/decrease speed per key press (q / a)
 // measured in meters/second
 const ACCELERATION = 50;
+
+// tile definition, depends on the topography and texture input data
+const TILE_RESOLUTION = 50;
+const TILE_POINT_COUNT = 256;
+const TILE_SIZE = TILE_RESOLUTION * TILE_POINT_COUNT;
 
 export default class ThreeModule {
   constructor(ref, originCoordinate) {
@@ -78,16 +83,16 @@ export default class ThreeModule {
 
     // Define the camera - having a 45 degree field of view
     // and an aspect ratio matching the aspect of the browser window
-    // and with a near limit of 10 and and far limit of 20000
+    // and with a near limit of 10 and and far limit of 40000
     this.camera = new THREE.PerspectiveCamera(
       45,
       window.innerWidth / window.innerHeight,
       10,
-      200000
+      40000
     );
 
     // Define the initial camera position (x, y, z)
-    this.camera.position.set(5000, 5000, 500);
+    this.camera.position.set(5000, 5000, 1000);
 
     // Fix up the camera coordinate conventions - so that the
     // x and y coordinates run along the surface of our terrain
@@ -106,6 +111,9 @@ export default class ThreeModule {
 
     // Adjust pixel size for retina screens
     this.renderer.setPixelRatio(window.devicePixelRatio);
+
+    // Add horizon
+    //this.createHorizon();
 
     // Add the canvas element Three.js renders to onto the DOM
     ref.current.appendChild(this.renderer.domElement);
@@ -136,147 +144,47 @@ export default class ThreeModule {
     for (const x of [-1, 0, 1]) {
       for (const y of [-1, 0, 1]) {
         if (x !== 0 || y !== 0) {
-          this.createTile({...tile, x: tile.x + x*12750, y: tile.y + y*12750}, {x,y});
+          this.createTile({...tile, x: tile.x + x*TILE_SIZE, y: tile.y + y*TILE_SIZE}, {x,y});
         }
       }
     }
     
 
     if (originCoordinate) {
-      // Create the sign
-      const signPosition = coordinateToScene(originCoordinate, tile);
-      // how tall the sign is
-      const billboardElevation = 500;
-      // how wide the pole is
-      const billboardPoleWidth = 14;
-
-      ////// START UGLY BILLBOARD HACK
-
-      this.text = tile.tileset.text;
-
-      const billboardPixelHeight = 66;
-      const billboardLineWidth = 8;
-      const billboardFont = "bold 40px Helvetica";
-      const billboardPixelWidthPadding = 60;
-      const billboardPixelMinimumWidth = 140;
-
-      const textureWidth = 512;
-      const textureHeight = 256;
-
-      // scaling factor for billboard texture,
-      // maps pixels (texture) to metres (geometry)
-      const textureScale = 2;
-      const billboardGeometryWidth = textureWidth * textureScale;
-      const billboardGeometryHeight = textureHeight * textureScale;
-
-      this.textureCanvas = document.createElement("canvas");
-      this.ctx = this.textureCanvas.getContext("2d");
-      this.textureCanvas.width = textureWidth;
-      this.textureCanvas.height = textureHeight;
-
-      // clear the canvas
-      this.ctx.clearRect(
-        0,
-        0,
-        this.textureCanvas.width,
-        this.textureCanvas.height
-      );
-
-      // set background color to black
-      // NB color info is reused as alpha mask (black = transparent)
-      this.ctx.fillStyle = "black";
-      this.ctx.fillRect(
-        0,
-        0,
-        this.textureCanvas.width,
-        this.textureCanvas.height
-      );
-
-      this.ctx.textAlign = "center";
-      this.ctx.textBaseline = "middle";
-
-      // set text color to white
-      // NB color info is reused as alpha mask (white = opaque)
-      this.ctx.fillStyle = "white";
-      this.ctx.font = billboardFont;
-      this.ctx.fillText(
-        this.text,
-        this.textureCanvas.width / 2,
-        this.textureCanvas.height / 2
-      );
-
-      // measure effective text size in pixels
-      const textSize = this.ctx.measureText(this.text);
-      let billboardPixelWidth = textSize.width + billboardPixelWidthPadding;
-      // pad short names so billboards become wide and not quadratic
-      if (billboardPixelWidth < billboardPixelMinimumWidth) {
-        billboardPixelWidth += 20;
-      }
-
-      // draw border onto billboard
-      this.ctx.lineWidth = billboardLineWidth;
-      this.ctx.strokeStyle = "white";
-      this.ctx.strokeRect(
-        this.textureCanvas.width / 2 - billboardPixelWidth / 2,
-        this.textureCanvas.height / 2 - billboardPixelHeight / 2,
-        billboardPixelWidth,
-        billboardPixelHeight
-      );
-
-      // use canvas contents as texture
-      const texture = new THREE.Texture(this.textureCanvas);
-      texture.needsUpdate = true;
-
-      const billboardGeometry = new THREE.PlaneBufferGeometry(
-        billboardGeometryWidth,
-        billboardGeometryHeight
-      );
-      const billboardMaterial = new THREE.MeshBasicMaterial();
-      billboardMaterial.transparent = true;
-      billboardMaterial.map = texture;
-      billboardMaterial.alphaMap = texture;
-
-      const billboard = new THREE.Mesh(billboardGeometry, billboardMaterial);
-      billboard.position.set(
-        signPosition.x,
-        signPosition.y,
-        billboardElevation
-      );
-      billboard.up = new THREE.Vector3(0, 0, 1);
-
-      billboard.lookAt(
-        this.camera.position.x,
-        this.camera.position.y,
-        billboard.position.z
-      );
-
-      this.scene.add(billboard);
-
-      ////// END UGLY BILLBOARD HACK
-
-      const poleGeometry = new THREE.BoxBufferGeometry(
-        billboardPoleWidth,
-        billboardPoleWidth,
-        billboardElevation
-      );
-      const poleMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-
-      const pole = new THREE.Mesh(poleGeometry, poleMaterial);
-
-      pole.position.set(
-        signPosition.x,
-        signPosition.y,
-        billboardElevation / 2 -
-          (billboardPixelHeight * textureScale) / 2 -
-          (billboardLineWidth * textureScale) / 2
-      );
-
-      this.scene.add(pole);
+      const targetCoordinate = coordinateToScene(originCoordinate, tile);
+      this.createPole(targetCoordinate, tile.tileset.text);
+      //this.camera.lookAt(new THREE.Vector3(targetCoordinate.x, targetCoordinate.y, 0))
     }
+
 
     // Bind the animate function before using it
     this.animate = this.animate.bind(this);
-    this.animate();
+    this.animate(); 
+  }
+
+  createHorizon() {
+    const geometry = new THREE.PlaneBufferGeometry(
+      TILE_SIZE*10,
+      TILE_SIZE*10
+    );
+
+    let tex = new THREE.TextureLoader().load("./data/background-pattern.jpg")
+    tex.anisotropy = 32
+    tex.repeat.set(10, 10)
+    tex.wrapT = THREE.RepeatWrapping
+    tex.wrapS = THREE.RepeatWrapping
+    const mat = new THREE.MeshLambertMaterial({
+      map: tex,
+      color: new THREE.Color(0.5, 0.6, 0.8)
+    })
+
+    // Define a grey colored material, having smooth shading
+    //const material = new THREE.MeshLambertMaterial({color: new THREE.Color(0.4, 0.5, 0.7)});
+
+    // Define this to be a Mesh
+    const horizon = new THREE.Mesh(geometry, mat);
+    horizon.position.set(0, 0, -1);
+    this.scene.add(horizon);
   }
 
   createTile(tile, origin) {
@@ -286,10 +194,10 @@ export default class ThreeModule {
     // The ground plane should then be 50 * 256 units long and wide.
     // It should have 256 segments in each direction - to match the input data.
     const geometry = new THREE.PlaneBufferGeometry(
-      50 * 256,
-      50 * 256,
-      256,
-      256
+      TILE_SIZE,
+      TILE_SIZE,
+      TILE_POINT_COUNT,
+      TILE_POINT_COUNT
     );
 
     // Define a grey colored material, having smooth shading
@@ -306,8 +214,8 @@ export default class ThreeModule {
 
     // By default, the center point for a Mesh is placed at (0, 0, 0)
     // Here we move the mesh so the lower left corner is at (0, 0, 0) instead
-    const centerX = origin.x*(50 * 256) + (50 * 256) / 2;
-    const centerY = origin.y*(50 * 256) + (50 * 256) / 2;
+    const centerX = origin.x*(TILE_SIZE) + (TILE_SIZE) / 2;
+    const centerY = origin.y*(TILE_SIZE) + (TILE_SIZE) / 2;
     ground.position.set(centerX, centerY, 0);
 
     // Initiate loading the photo texture from the jpg file
@@ -322,6 +230,138 @@ export default class ThreeModule {
       undefined,
       undefined
     );
+  }
+
+  createPole(coordinate, text) {
+    // Create the sign
+    const signPosition = coordinate;
+    // how tall the sign is
+    const billboardElevation = 500;
+    // how wide the pole is
+    const billboardPoleWidth = 14;
+
+    ////// START UGLY BILLBOARD HACK
+
+    this.text = text;
+
+    const billboardPixelHeight = 66;
+    const billboardLineWidth = 8;
+    const billboardFont = "bold 40px Helvetica";
+    const billboardPixelWidthPadding = 60;
+    const billboardPixelMinimumWidth = 140;
+
+    const textureWidth = 512;
+    const textureHeight = 256;
+
+    // scaling factor for billboard texture,
+    // maps pixels (texture) to metres (geometry)
+    const textureScale = 2;
+    const billboardGeometryWidth = textureWidth * textureScale;
+    const billboardGeometryHeight = textureHeight * textureScale;
+
+    this.textureCanvas = document.createElement("canvas");
+    this.ctx = this.textureCanvas.getContext("2d");
+    this.textureCanvas.width = textureWidth;
+    this.textureCanvas.height = textureHeight;
+
+    // clear the canvas
+    this.ctx.clearRect(
+      0,
+      0,
+      this.textureCanvas.width,
+      this.textureCanvas.height
+    );
+
+    // set background color to black
+    // NB color info is reused as alpha mask (black = transparent)
+    this.ctx.fillStyle = "black";
+    this.ctx.fillRect(
+      0,
+      0,
+      this.textureCanvas.width,
+      this.textureCanvas.height
+    );
+
+    this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "middle";
+
+    // set text color to white
+    // NB color info is reused as alpha mask (white = opaque)
+    this.ctx.fillStyle = "white";
+    this.ctx.font = billboardFont;
+    this.ctx.fillText(
+      this.text,
+      this.textureCanvas.width / 2,
+      this.textureCanvas.height / 2
+    );
+
+    // measure effective text size in pixels
+    const textSize = this.ctx.measureText(this.text);
+    let billboardPixelWidth = textSize.width + billboardPixelWidthPadding;
+    // pad short names so billboards become wide and not quadratic
+    if (billboardPixelWidth < billboardPixelMinimumWidth) {
+      billboardPixelWidth += 20;
+    }
+
+    // draw border onto billboard
+    this.ctx.lineWidth = billboardLineWidth;
+    this.ctx.strokeStyle = "white";
+    this.ctx.strokeRect(
+      this.textureCanvas.width / 2 - billboardPixelWidth / 2,
+      this.textureCanvas.height / 2 - billboardPixelHeight / 2,
+      billboardPixelWidth,
+      billboardPixelHeight
+    );
+
+    // use canvas contents as texture
+    const texture = new THREE.Texture(this.textureCanvas);
+    texture.needsUpdate = true;
+
+    const billboardGeometry = new THREE.PlaneBufferGeometry(
+      billboardGeometryWidth,
+      billboardGeometryHeight
+    );
+    const billboardMaterial = new THREE.MeshBasicMaterial();
+    billboardMaterial.transparent = true;
+    billboardMaterial.map = texture;
+    billboardMaterial.alphaMap = texture;
+
+    const billboard = new THREE.Mesh(billboardGeometry, billboardMaterial);
+    billboard.position.set(
+      signPosition.x,
+      signPosition.y,
+      billboardElevation
+    );
+    billboard.up = new THREE.Vector3(0, 0, 1);
+
+    billboard.lookAt(
+      this.camera.position.x,
+      this.camera.position.y,
+      billboard.position.z
+    );
+
+    this.scene.add(billboard);
+
+    ////// END UGLY BILLBOARD HACK
+
+    const poleGeometry = new THREE.BoxBufferGeometry(
+      billboardPoleWidth,
+      billboardPoleWidth,
+      billboardElevation
+    );
+    const poleMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
+
+    const pole = new THREE.Mesh(poleGeometry, poleMaterial);
+
+    pole.position.set(
+      signPosition.x,
+      signPosition.y,
+      billboardElevation / 2 -
+        (billboardPixelHeight * textureScale) / 2 -
+        (billboardLineWidth * textureScale) / 2
+    );
+
+    this.scene.add(pole);
   }
 
   animate(currentFrametime) {
