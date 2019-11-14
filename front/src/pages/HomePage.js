@@ -25,6 +25,9 @@ function HomePage() {
           <img alt="height map gif" src={hmGif} />
           <h2>Meet the geniuses behind this project</h2>
           <img alt="geniuses 1" src={team1Image} />
+          <br />
+          <br />
+          <br />
           <img alt="geniuses 2" src={team2Image} />
         </div>
       </div>
