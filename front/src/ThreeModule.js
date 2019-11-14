@@ -80,7 +80,7 @@ export default class ThreeModule {
       45,
       window.innerWidth / window.innerHeight,
       10,
-      20000
+      200000
     );
 
     // Define the initial camera position (x, y, z)
@@ -128,9 +128,16 @@ export default class ThreeModule {
       ? rangeMapper(originCoordinate)
       : rangeMapper(defaultCoordinate);
     console.log(`Loading tile ${tile.x}-${tile.y} from ${tile.tileset.id}`);
-    const ground = this.createTile(tile, { x: 0, y: 0 });
-    // Add the ground to the scene
-    this.scene.add(ground);
+    this.createTile(tile, { x: 0, y: 0 });
+    // Add neighbour tiles if they exist
+    for (const x of [-1, 0, 1]) {
+      for (const y of [-1, 0, 1]) {
+        if (x !== 0 || y !== 0) {
+          this.createTile({...tile, x: tile.x + x*12750, y: tile.y + y*12750}, {x,y});
+        }
+      }
+    }
+    
 
     if (originCoordinate) {
       // Create the sign
@@ -291,23 +298,27 @@ export default class ThreeModule {
     material.displacementMap = displacementMap;
     material.displacementScale = tile.tileset.scale;
 
-    // Load the photo texture from the jpg file
-
-    const texture = new THREE.TextureLoader().load(
-      `./data/${tile.x}-${tile.y}.jpg`
-    );
-
-    material.map = texture;
-
     // Define this to be a Mesh
     const ground = new THREE.Mesh(geometry, material);
 
     // By default, the center point for a Mesh is placed at (0, 0, 0)
     // Here we move the mesh so the lower left corner is at (0, 0, 0) instead
-    const centerX = origin.x + (50 * 256) / 2;
-    const centerY = origin.y + (50 * 256) / 2;
+    const centerX = origin.x*(50 * 256) + (50 * 256) / 2;
+    const centerY = origin.y*(50 * 256) + (50 * 256) / 2;
     ground.position.set(centerX, centerY, 0);
-    return ground;
+
+    // Initiate loading the photo texture from the jpg file
+
+    new THREE.TextureLoader().load(
+      `./data/${tile.x}-${tile.y}.jpg`,
+      (texture) => {
+        material.map = texture;
+        // Only add the ground to the scene if there is a texture
+        this.scene.add(ground)
+      },
+      undefined,
+      undefined
+    );
   }
 
   animate(currentFrametime) {
