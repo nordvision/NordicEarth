@@ -1,4 +1,10 @@
 tif/
 tif-sweden/
+
+heightmap/
 topography/
 topography.vrt
+
+satellite/
+texture/
+texture.vrt

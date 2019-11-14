@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # create virtual file representing the whole data set
-gdalbuildvrt topography.vrt tif/*.tif
+gdalbuildvrt topography.vrt heightmap/*.tif
 
 # one tile is NxN data points
 tile_size=256

@@ -15,7 +15,7 @@ function InstructionsPage() {
           <h2>How to prepare the data files</h2>
           <ol>
             <li>Download height data (from your local mapping agency, probably).</li>
-            <li>Download satellite data (from your local mapping agency, or ESA: https://apps.sentinel-hub.com/eo-browser/).</li>
+            <li>Download satellite data (from your local mapping agency, or <a href="https://apps.sentinel-hub.com/eo-browser/">ESA</a>).</li>
             <li>Download three.js to create a visualization where you load the height and satellite data and show them as seen from a given camera location.</li>
           </ol>
           <h2>What can you do with GDAL</h2>
@@ -28,9 +28,9 @@ function InstructionsPage() {
           <h2>Short introduction to GDAL</h2>
           <ul>
             <li>GDAL can convert and manipulate all kinds of geographical data.</li>
-            <li>Download it <a href="https://gdal.org/download.html#binaries">here</a>.</li>
+            <li>Download GDAL <a href="https://gdal.org/download.html#binaries">here</a>.</li>
             <li>To get an overview of all the programs contained inside GDAL check <a href="https://gdal.org/programs/index.html">here</a>.</li>
-            <li>It can read _many_ <a href="https://gdal.org/drivers/raster/index.html">data formats</a>.</li>
+            <li>It can read <strong>many</strong> <a href="https://gdal.org/drivers/raster/index.html">data formats</a>.</li>
           </ul>
           <h2>Tips</h2>
           <ul>
