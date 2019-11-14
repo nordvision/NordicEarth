@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ThreeModule from "../ThreeModule";
+import ThreeModule from "../ThreeModuleBonus";
 
 class MapPage extends Component {
   constructor(props) {

@@ -34,7 +34,8 @@ const ACCELERATION = 50;
 
 export default class ThreeModule {
 
-  constructor(ref, originCoordinate) {
+  constructor(props) {
+
     // Set initial speed to zero
     this.speed = 0;
 
@@ -83,7 +84,7 @@ export default class ThreeModule {
     this.renderer.setPixelRatio(window.devicePixelRatio);
 
     // Add the canvas element Three.js renders to onto the DOM
-    ref.current.appendChild(this.renderer.domElement);
+    props.ref.appendChild(this.renderer.domElement);
 
     // Bind the resize handler function before using it
     this.resizeHandler = this.resizeHandler.bind(this);
@@ -117,18 +118,25 @@ export default class ThreeModule {
     const material = new THREE.MeshPhongMaterial();
 
 
-    const tile = originCoordinate ? rangeMapper(originCoordinate) : defaultTile;
-    console.log(`Loading tile ${tile.x}-${tile.y} from ${tile.tileset}`);
+    console.log(
+      props.textureMap,
+      props.imageMap);
+
+    // ./data/91250-6973750.jpg ./data/91250-6973750.png
+
     // Load the height map from the png file
     const displacementMap = new THREE.TextureLoader().load(
-      `./data/${tile.x}-${tile.y}.png`
+      props.textureMap || "./data/91250-6973750.png"
+
     );
     material.displacementMap = displacementMap;
-    material.displacementScale = 2000;
+    material.displacementScale = props.displacementScale || 2000;
 
     // Load the photo texture from the jpg file
 
-    const texture = new THREE.TextureLoader().load(`./data/${tile.x}-${tile.y}.jpg`);
+    const texture = new THREE.TextureLoader().load(
+      props.imageMap || "./data/91250-6973750.jpg"
+    );
 
     material.map = texture;
 
@@ -137,7 +145,7 @@ export default class ThreeModule {
 
     // By default, the center point for a Mesh is placed at (0, 0, 0)
     // Here we move the mesh so the lower left corner is at (0, 0, 0) instead
-    ground.position.set((50 * 256) / 2, (50 * 256) / 2, 0);
+    ground.position.set(props.groundPosX || (50 * 256) / 2, props.groundPosY || (50 * 256) / 2, props.groundPosZ || 0);
 
     // Add the ground to the scene
     this.scene.add(ground);

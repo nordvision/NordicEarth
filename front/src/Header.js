@@ -12,7 +12,7 @@ function Header() {
         <Link to="/instructions">DIY</Link>
         <Link to="/keys">Key commands</Link>
         <Link to="/maps">Maps</Link>
-        <Link to="/groupmap">Bonus</Link>
+        <Link to="/bonusmap">Bonus</Link>
       </div>
     </div>
   )
