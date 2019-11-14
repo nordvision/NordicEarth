@@ -14,7 +14,12 @@ function HomePage() {
       <div className="HomePage">
         <div className="HomePage_inner">
           <h1>Experience the magic of Nordic Earth</h1>
-          <p>Lorem ipsum dolor amet pork belly schlitz aute, aliquip craft beer veniam tilde selfies dolore ennui synth vape jianbing. Bespoke chia cloud bread poke, snackwave pariatur pop-up iceland. Wayfarers adipisicing elit church-key cornhole wolf health goth. Selvage poutine banh mi, ut iceland duis palo santo microdosing letterpress tumeric affogato before they sold out ut ex. Austin mollit bicycle rights, cronut vice cred cardigan exercitation actually do raw denim. Everyday carry pour-over officia, art party mlkshk next level cray. Reprehenderit actually hot chicken kitsch mustache.</p>
+          <p>Nordic Earth gives you the power to generate 3D images from ortographic photos. By combining topographic data with satelite images you can generate awesome 3D images. You can pan around in the 3D universe and explore points of interest.</p>
+          <h2>What is it</h2>
+          <ul>
+            <li>As a journalist, you can use this expert tool to generate 3D image from a point of interest.</li>
+            <li>You can also make cool CGI panoramic content for your videos or articles.</li>
+          </ul>
           <h2>Meet the geniuses behind this project</h2>
           <img alt="geniuses 1" src={team1Image} />
           <img alt="geniuses 2" src={team2Image} />
