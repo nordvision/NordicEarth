@@ -8,12 +8,16 @@ class MapPage extends Component {
   }
 
   componentDidMount() {
+<<<<<<< HEAD
     new ThreeModule({
       ref: this.mapRef.current,
       displacementScale: 2000,
       imageMap: "./data/91250-6973750.jpg", // "./data/team1_bw.png",
       textureMap: "./data/91250-6973750.png" //"./data/team1.png"
     });
+=======
+    new ThreeModule(this.mapRef) // eslint-disable-line no-new
+>>>>>>> 923bcb798989ae61d8978d097e43f1cf10731c5b
   }
 
   render() {
