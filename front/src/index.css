@@ -17,7 +17,7 @@ code {
 
 .top_navigation {
   text-align: left;
-  background-color: #02529C;
+  background-color: rgba(2, 82, 156, .5);
   position: relative;
   border-bottom: 4px solid #DC1E35;
 }

@@ -120,8 +120,7 @@ function InstructionsPage() {
           <h2>Using GDAL - part 2</h2>
           <ul>
             <li>
-              To use matching satellite imagery, first download a Sentinel zip
-              file. For example, from: https://apps.sentinel-hub.com/eo-browser/
+              To use matching satellite imagery, first download a Sentinel zip <a href="https://apps.sentinel-hub.com/eo-browser/">file</a>.
               Unzip the file. There should be a subdirectory called GRANULE
               there. Go there, and to its subdirectory (having a long, cryptic
               name, like L1C_T33UUB_A013819_20191029T102039), and go to the
