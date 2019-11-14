@@ -1,6 +1,6 @@
 import React from 'react'
 
-import './InstructionsPage.css'
+import './InstructionsPage.scss'
 
 /* eslint-disable max-len */
 
