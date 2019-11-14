@@ -145,7 +145,7 @@ export default class ThreeModule {
       this.text = "Russian submarine";
 
       const billboardPixelHeight = 66;
-      const billboardLineWidth = 7;
+      const billboardLineWidth = 8;
       const billboardFont = "bold 40px Helvetica";
       const billboardPixelWidthPadding = 60;
       const billboardPixelMinimumWidth = 140;
