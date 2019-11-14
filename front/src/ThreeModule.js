@@ -8,7 +8,7 @@ const ROTATION_SPEED = 0.05;
 const ACCELERATION = 50;
 
 export default class ThreeModule {
-  constructor(ref) {
+  constructor(ref, originCoordinate) {
     // Set initial speed to zero
     this.speed = 0;
 
@@ -89,16 +89,26 @@ export default class ThreeModule {
 
     // Define a grey colored material, having smooth shading
     const material = new THREE.MeshPhongMaterial();
+    const defaultTile = { x: 91250, y: 6973750 };
+    const rangeMapper = ([x, y]) => {
+      const minX = 600000, maxX = 800000, minY = 6400000, maxY = 6700000;
+      const tileX = x - ((x - minX) % (50*255));
+      const tileY = y - ((y - minY) % (50*255));
+      return { x: tileX, y: tileY }
+    }
 
+    const tile = originCoordinate ? rangeMapper(originCoordinate) : defaultTile;
+
+    console.log(tile);
     // Load the height map from the png file
     const displacementMap = new THREE.TextureLoader().load(
-      "./data/91250-6973750.png"
+      `./data/${tile.x}-${tile.y}.png`
     );
     material.displacementMap = displacementMap;
     material.displacementScale = 2000;
 
     // Load the photo texture from the jpg file
-    const texture = new THREE.TextureLoader().load("./data/91250-6973750.jpg");
+    const texture = new THREE.TextureLoader().load(`./data/${tile.x}-${tile.y}.jpg`);
     material.map = texture;
 
     // Define this to be a Mesh
