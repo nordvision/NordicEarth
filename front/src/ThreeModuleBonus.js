@@ -1,6 +1,5 @@
 import * as THREE from "three";
 
-
 // rotation rate, in radians per frame
 const ROTATION_SPEED = 0.05;
 
@@ -9,9 +8,7 @@ const ROTATION_SPEED = 0.05;
 const ACCELERATION = 50;
 
 export default class ThreeModule {
-
   constructor(props) {
-
     // Set initial speed to zero
     this.speed = -100;
 
@@ -39,12 +36,12 @@ export default class ThreeModule {
     );
 
     // Define the initial camera position (x, y, z)
-    this.camera.position.set(6000, 6500, 1200);
+    this.camera.position.set(6000, 7000, 500);
 
     // Fix up the camera coordinate conventions - so that the
     // x and y coordinates run along the surface of our terrain
     // and z describes the height
-    this.camera.rotateX(Math.PI / 4);
+    this.camera.rotateX(Math.PI * 0.2);
     this.camera.up = new THREE.Vector3(0, 0, 1);
 
     // Set up WebGL and attach a canvas element to the DOM
@@ -86,24 +83,20 @@ export default class ThreeModule {
     const geometry = new THREE.PlaneBufferGeometry(
       50 * 256,
       50 * 256,
-      256,
-      256
+      1024,
+      1024
     );
 
     // Define a grey colored material, having smooth shading
     const material = new THREE.MeshPhongMaterial();
 
-
-    console.log(
-      props.textureMap,
-      props.imageMap);
+    console.log(props.textureMap, props.imageMap);
 
     // ./data/91250-6973750.jpg ./data/91250-6973750.png
 
     // Load the height map from the png file
     const displacementMap = new THREE.TextureLoader().load(
       props.textureMap || "./data/91250-6973750.png"
-
     );
     material.displacementMap = displacementMap;
     material.displacementScale = props.displacementScale || 2000;
@@ -121,7 +114,11 @@ export default class ThreeModule {
 
     // By default, the center point for a Mesh is placed at (0, 0, 0)
     // Here we move the mesh so the lower left corner is at (0, 0, 0) instead
-    ground.position.set(props.groundPosX || (50 * 256) / 2, props.groundPosY || (50 * 256) / 2, props.groundPosZ || 0);
+    ground.position.set(
+      props.groundPosX || (50 * 256) / 2,
+      props.groundPosY || (50 * 256) / 2,
+      props.groundPosZ || 0
+    );
 
     // Add the ground to the scene
     this.scene.add(ground);
