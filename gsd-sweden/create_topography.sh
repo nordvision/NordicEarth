@@ -12,7 +12,7 @@ resolution=50
 # width and height of a single tile, in meters
 ((tile_extents = ( tile_size - 1 ) * resolution))
 
-# set UTM coordinates of the tile set extents (whole of norway)
+# set UTM coordinates of the tile set extents
 tiles_min_x=600000
 tiles_min_y=6400000
 tiles_max_x=800000
