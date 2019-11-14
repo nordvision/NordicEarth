@@ -1,3 +1,13 @@
 .InstructionsPage {
-  color: #FFF
+  color: #FFF;
+  text-align: left;
+}
+
+.InstructionsPage h1, .InstructionsPage h2 {
+  text-align: center;
+  color: paleturquoise;
+}
+
+.InstructionsPage a {
+  color: bisque;
 }
