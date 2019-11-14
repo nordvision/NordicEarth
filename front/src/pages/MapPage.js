@@ -1,28 +1,45 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import * as THREE from 'three';
 
-import logo from '../logo.svg'
 
-function MapPage({ props }) {
-  const berries = ['blue', 'red', 'jam', 'lingon']
-  return (
-    <div>
-      <h1>Blueberry Jam</h1>
-      <p>
-        Lorem ipsum dolor amet master cleanse hella tacos street art.
-      </p>
-      <img src={logo} alt="logo" height={100} width={100} />
-      {berries.map((berry) => (
-        <li>
-          {`${berry}berry`}
-        </li>
-      ))}
-    </div>
-  )
+class MapPage extends Component {
+
+  constructor(props) {
+    super(props);
+    this.mapRef = React.createRef();
+  }
+
+
+  componentDidMount() {
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+    var geometry = new THREE.BoxGeometry(1, 1, 1);
+    var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    var cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+    camera.position.z = 5;
+    var animate = function () {
+      requestAnimationFrame(animate);
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    };
+    animate();
+  }
+
+
+  render() {
+
+
+    return (
+      <div ref={this.mapRef}> </div>
+    )
+  }
 }
 
-MapPage.propTypes = {
-  
-}
+
 
 export default MapPage
