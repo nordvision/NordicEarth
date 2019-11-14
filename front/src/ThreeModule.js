@@ -5,25 +5,22 @@ export default class ThreeModule {
     // In three.js, everything to be drawn must be added to the Scene object
     this.scene = new THREE.Scene();
 
-    // Define a point light (i.e. a light bulb), shining with white color
-    this.light = new THREE.PointLight(0xffffff);
-    this.light.position.set(25, 50, 20);
-
-    // Add the light to the scene
-    this.scene.add(this.light);
+    // Define a general white light covering the entire scene
+    this.ambientLight = new THREE.AmbientLight(0xffffff);
+    this.scene.add(this.ambientLight);
 
     // Define the camera - having a 45 degree field of view
     // and an aspect ratio matching the aspect of the browser window
-    // and with a near and far limit of 1 and 2000
+    // and with a near limit of 10 and and far limit of 20000
     this.camera = new THREE.PerspectiveCamera(
       45,
       window.innerWidth / window.innerHeight,
-      1,
-      2000
+      10,
+      20000
     );
 
-    // Define the camera position (x, y, z)
-    this.camera.position.set(0, -20, 10);
+    // Define the initial camera position (x, y, z)
+    this.camera.position.set(5000, 5000, 500);
 
     // Fix up the camera coordinate conventions - so that the
     // x and y coordinates run along the surface of our terrain
@@ -55,15 +52,38 @@ export default class ThreeModule {
     // const helper = new THREE.AxesHelper(1000);
     // this.scene.add(helper);
 
-    // For now, add a ground plane 200 units long and 200 units wide
-    // consisting of 256 grid segments in each direction
-    const geometry = new THREE.PlaneBufferGeometry(200, 200, 256, 256);
+    // Add a ground plane - a flat mesh.
+    // The size and number of segments must match the source data height map.
+    // The demo input file has 50 meter resolution and has 256 by 256 data points.
+    // The ground plane should then be 50 * 256 units long and wide.
+    // It should have 256 segments in each direction - to match the input data.
+    const geometry = new THREE.PlaneBufferGeometry(
+      50 * 256,
+      50 * 256,
+      256,
+      256
+    );
 
     // Define a grey colored material, having smooth shading
-    const material = new THREE.MeshPhongMaterial({ color: 0xcccccc });
+    const material = new THREE.MeshPhongMaterial();
+
+    // Load the height map from the png file
+    const displacementMap = new THREE.TextureLoader().load(
+      "./data/91250-6973750.png"
+    );
+    material.displacementMap = displacementMap;
+    material.displacementScale = 2000;
+
+    // Load the photo texture from the jpg file
+    const texture = new THREE.TextureLoader().load("./data/91250-6973750.jpg");
+    material.map = texture;
 
     // Define this to be a Mesh
     const ground = new THREE.Mesh(geometry, material);
+
+    // By default, the center point for a Mesh is placed at (0, 0, 0)
+    // Here we move the mesh so the lower left corner is at (0, 0, 0) instead
+    ground.position.set((50 * 256) / 2, (50 * 256) / 2, 0);
 
     // Add the ground to the scene
     this.scene.add(ground);
