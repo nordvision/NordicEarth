@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {
   Route, Link
 } from 'react-router-dom'
@@ -7,7 +6,7 @@ import {
 import MapPage from './pages/MapPage'
 import InstructionsPage from './pages/InstructionsPage'
 
-function Header({ props }) {
+function Header() {
   const padding = { padding: 5 }
   return (
     <div>
@@ -17,9 +16,6 @@ function Header({ props }) {
       <Route exact path="/instructions" render={() => <InstructionsPage />} />
     </div>
   )
-}
-
-Header.propTypes = {
 }
 
 export default Header
