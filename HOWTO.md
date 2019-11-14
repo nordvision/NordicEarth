@@ -17,10 +17,10 @@ Short introduction to GDAL:
 
 GDAL can convert and manipulate all kinds of geographical data.
 
-It is available from here: https://gdal.org/
-Downloads are here: https://gdal.org/download.html#binaries
-To get an overview of all the programs contained inside GDAL: https://gdal.org/programs/index.html
-It can read _many_ data formats: https://gdal.org/drivers/raster/index.html
+* It is available from here: https://gdal.org/
+* Downloads are here: https://gdal.org/download.html#binaries
+* To get an overview of all the programs contained inside GDAL: https://gdal.org/programs/index.html
+* It can read _many_ data formats: https://gdal.org/drivers/raster/index.html
 
 Tips:
 
