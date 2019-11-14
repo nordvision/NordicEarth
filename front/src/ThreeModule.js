@@ -9,15 +9,17 @@ const tilesets = [
     maxX: 800000,
     minY: 6400000,
     maxY: 6700000,
-    scale: 6000
+    scale: 6000,
+    text: "Russian submarine"
   },
   {
     id: "norway",
     minX: 91250,
-    maxX: 92000,
+    maxX: 100000,
     minY: 6973750,
-    maxY: 6980000,
-    scale: 2000
+    maxY: 7100000,
+    scale: 2000,
+    text: "Molde"
   },
   {
     id: "denmark",
@@ -25,7 +27,8 @@ const tilesets = [
     maxX: 330000,
     minY: 6170538,
     maxY: 6200000,
-    scale: 2000
+    scale: 2000,
+    text: "Roskilde"
   }
 ];
 
@@ -149,7 +152,7 @@ export default class ThreeModule {
 
       ////// START UGLY BILLBOARD HACK
 
-      this.text = "Russian submarine";
+      this.text = tile.tileset.text;
 
       const billboardPixelHeight = 66;
       const billboardLineWidth = 8;

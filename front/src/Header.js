@@ -11,7 +11,7 @@ function Header() {
         <Link to="/">Home</Link>
         <Link to="/instructions">DIY</Link>
         <Link to="/keys">Keys</Link>
-        <Link to="/maps">Molde</Link>
+        <Link to="/maps?gps=62.738868,7.150271">Molde</Link>
         <Link to="/maps?gps=59.357826,17.785493">Stockholm</Link>
         <Link to="/maps?gps=55.668677,12.073107">Roskilde</Link>
       </div>
