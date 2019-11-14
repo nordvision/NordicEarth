@@ -1,7 +1,23 @@
 import * as THREE from "three";
 
+// rotation rate, in radians per frame
+const ROTATION_SPEED = 0.05;
+
+// amount to increase/decrease speed per key press (q / a)
+// measured in meters/second
+const ACCELERATION = 50;
+
 export default class ThreeModule {
   constructor(ref) {
+    // Set initial speed to zero
+    this.speed = 0;
+
+    // Store a time stamp when a new rendering starts
+    this.frametime = 0;
+
+    // Store a time stamp from the previous rendering
+    this.previousFrameTime = 0;
+
     // In three.js, everything to be drawn must be added to the Scene object
     this.scene = new THREE.Scene();
 
@@ -31,6 +47,9 @@ export default class ThreeModule {
     // Set up WebGL and attach a canvas element to the DOM
     this.renderer = new THREE.WebGLRenderer();
 
+    // Set a background color: Simulate sky blue
+    this.renderer.setClearColor(new THREE.Color(0.5, 0.6, 0.8), 1);
+
     // Set the canvas element to be full screen
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -43,10 +62,14 @@ export default class ThreeModule {
     // Bind the resize handler function before using it
     this.resizeHandler = this.resizeHandler.bind(this);
 
-    // Attach the function to the event
+    // Attach the resize handler function to the event
     window.addEventListener("resize", this.resizeHandler, false);
 
-    //        window.addEventListener("keydown", keyboardHandler);
+    // Bind the keyborard handler function before using it
+    this.keyboardHandler = this.keyboardHandler.bind(this);
+
+    // Attach the keyboard handler function to the event
+    window.addEventListener("keydown", this.keyboardHandler, false);
 
     // Uncomment this code to render three lines on the screen, each describing the x, y and z axes
     // const helper = new THREE.AxesHelper(1000);
@@ -93,8 +116,19 @@ export default class ThreeModule {
     this.animate();
   }
 
-  animate() {
+  animate(currentFrametime) {
+    this.frametime = currentFrametime - this.previousFrameTime || 0;
+    this.previousFrameTime = currentFrametime;
+
     requestAnimationFrame(this.animate);
+
+    let cameraDirection = new THREE.Vector3();
+    this.camera.getWorldDirection(cameraDirection);
+    this.camera.position.addScaledVector(
+      cameraDirection,
+      this.speed * this.frametime * 0.001
+    );
+
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -105,5 +139,34 @@ export default class ThreeModule {
 
     // Also adjust the canvas element size so it stays full screen
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  keyboardHandler(keyboardEvent) {
+    switch (keyboardEvent.key) {
+      case "ArrowDown":
+        this.camera.rotateX(ROTATION_SPEED);
+        break;
+      case "ArrowUp":
+        this.camera.rotateX(-ROTATION_SPEED);
+        break;
+      case "ArrowLeft":
+        this.camera.rotateZ(ROTATION_SPEED);
+        break;
+      case "ArrowRight":
+        this.camera.rotateZ(-ROTATION_SPEED);
+        break;
+      case "q":
+        this.speed += ACCELERATION;
+        break;
+      case "a":
+        this.speed -= ACCELERATION;
+        break;
+      case "z":
+        this.camera.rotateY(ROTATION_SPEED);
+        break;
+      case "x":
+        this.camera.rotateY(-ROTATION_SPEED);
+        break;
+    }
   }
 }
