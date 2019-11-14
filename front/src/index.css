@@ -17,8 +17,9 @@ code {
 
 .top_navigation {
   text-align: left;
-  background-color: #333;
+  background-color: #02529C;
   position: relative;
+  border-bottom: 4px solid #DC1E35;
 }
 
 .top_navigation h1 {
@@ -28,12 +29,12 @@ code {
 }
 
 .top_navigation a {
-  color: #f7f7f2;
   background-color: #cdcdcd;
   padding: 6px 12px;
   display: inline-block;
   margin: 10px;
-  color: #000;
+  color: #02529C;
+  font-weight: 600;
   text-transform: uppercase;
   font-size: 14px;
   line-height: 14px;
