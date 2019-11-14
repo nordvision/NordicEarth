@@ -1,4 +1,5 @@
 HOWTO
+=====
 
 The overall process is:
 
@@ -11,16 +12,18 @@ The overall process is:
   -- convert the height data to a simple format (f.ex PNG) for presentation in the browser
   -- convert the satellite data to simple format (f.ex JPG) for presentation in the browser
 - Use three.js to
-  -- create a visualization where you load the height and satellite data and show them as seen from a given camera location
+  -- create an app where you load the height and satellite data and show them as seen from a given camera location
 
-Short introduction to GDAL:
+
+INTRODUCTION TO GDAL
+====================
 
 GDAL can convert and manipulate all kinds of geographical data.
 
-It is available from here: https://gdal.org/
-Downloads are here: https://gdal.org/download.html#binaries
-To get an overview of all the programs contained inside GDAL: https://gdal.org/programs/index.html
-It can read _many_ data formats: https://gdal.org/drivers/raster/index.html
+* It is available from here: https://gdal.org/
+* Downloads are here: https://gdal.org/download.html#binaries
+* To get an overview of all the programs contained inside GDAL: https://gdal.org/programs/index.html
+* It can read _many_ data formats: https://gdal.org/drivers/raster/index.html
 
 Tips:
 
