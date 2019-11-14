@@ -1,6 +1,13 @@
 .InstructionsPage {
   color: #f7f7f2;
-  text-align: left;
+  text-align: center;
+  margin-top: 30px;
+
+  .InstructionsPage_inner {
+    text-align: left;
+    max-width: 600px;
+    margin: 0 auto;
+  }
 
   h1,
   h2 {
