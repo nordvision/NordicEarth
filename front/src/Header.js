@@ -1,19 +1,16 @@
 import React from 'react'
 import {
-  Route, Link
+  Link
 } from 'react-router-dom'
 
-import MapPage from './pages/MapPage'
-import InstructionsPage from './pages/InstructionsPage'
+
 
 function Header() {
-  const padding = { padding: 5 }
   return (
-    <div>
-      <Link style={padding} to="/">Home</Link>
-      <Link style={padding} to="/instructions">How to do it</Link>
-      <Route exact path="/" render={() => <MapPage />} />
-      <Route exact path="/instructions" render={() => <InstructionsPage />} />
+    <div className='top_navigation'>
+      <h1> NORDIC EARTH</h1>
+      <Link to="/">Home</Link>
+      <Link to="/instructions">How to do it</Link>
     </div>
   )
 }
