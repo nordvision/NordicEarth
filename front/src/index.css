@@ -5,7 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #000;
+  background-color: #121113;
   ;
 }
 
@@ -21,13 +21,13 @@ code {
 }
 
 .top_navigation h1 {
-  color: #fff;
+  color: #f7f7f2;
   display: inline-block;
   margin: 30px;
 }
 
 .top_navigation a {
-  color: #fff;
+  color: #f7f7f2;
   background-color: #cdcdcd;
   padding: 6px 12px;
   display: inline-block;
