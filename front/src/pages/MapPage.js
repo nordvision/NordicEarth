@@ -8,7 +8,7 @@ class MapPage extends Component {
   }
 
   componentDidMount() {
-    const threeModule = new ThreeModule();
+    new ThreeModule(this.mapRef);
   }
 
   render() {

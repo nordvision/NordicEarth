@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 export default class ThreeModule {
-  constructor() {
+  constructor(ref) {
     // In three.js, everything to be drawn must be added to the Scene object
     this.scene = new THREE.Scene();
 
@@ -41,7 +41,7 @@ export default class ThreeModule {
     this.renderer.setPixelRatio(window.devicePixelRatio);
 
     // Add the canvas element Three.js renders to onto the DOM
-    document.body.appendChild(this.renderer.domElement);
+    ref.current.appendChild(this.renderer.domElement);
 
     // Bind the resize handler function before using it
     this.resizeHandler = this.resizeHandler.bind(this);
