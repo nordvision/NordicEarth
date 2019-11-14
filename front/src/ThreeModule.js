@@ -108,44 +108,10 @@ export default class ThreeModule {
     // const helper = new THREE.AxesHelper(1000);
     // this.scene.add(helper);
 
-    // Add a ground plane - a flat mesh.
-    // The size and number of segments must match the source data height map.
-    // The demo input file has 50 meter resolution and has 256 by 256 data points.
-    // The ground plane should then be 50 * 256 units long and wide.
-    // It should have 256 segments in each direction - to match the input data.
-    const geometry = new THREE.PlaneBufferGeometry(
-      50 * 256,
-      50 * 256,
-      256,
-      256
-    );
-
-    // Define a grey colored material, having smooth shading
-    const material = new THREE.MeshPhongMaterial();
-
     // Find the tile and tileset originCoordinate is on
     const tile = originCoordinate ? rangeMapper(originCoordinate) : defaultTile;
     console.log(`Loading tile ${tile.x}-${tile.y} from ${tile.tileset}`);
-    // Load the height map from the png file
-    const displacementMap = new THREE.TextureLoader().load(
-      `./data/${tile.x}-${tile.y}.png`
-    );
-    material.displacementMap = displacementMap;
-    material.displacementScale = 2000;
-
-    // Load the photo texture from the jpg file
-
-    const texture = new THREE.TextureLoader().load(`./data/${tile.x}-${tile.y}.jpg`);
-
-    material.map = texture;
-
-    // Define this to be a Mesh
-    const ground = new THREE.Mesh(geometry, material);
-
-    // By default, the center point for a Mesh is placed at (0, 0, 0)
-    // Here we move the mesh so the lower left corner is at (0, 0, 0) instead
-    ground.position.set((50 * 256) / 2, (50 * 256) / 2, 0);
-
+    const ground = this.createTile(tile, {x: 0, y: 0});
     // Add the ground to the scene
     this.scene.add(ground);
 
@@ -172,6 +138,45 @@ export default class ThreeModule {
     // Bind the animate function before using it
     this.animate = this.animate.bind(this);
     this.animate();
+  }
+
+  createTile(tile, origin) {
+    // Add a ground plane - a flat mesh.
+    // The size and number of segments must match the source data height map.
+    // The demo input file has 50 meter resolution and has 256 by 256 data points.
+    // The ground plane should then be 50 * 256 units long and wide.
+    // It should have 256 segments in each direction - to match the input data.
+    const geometry = new THREE.PlaneBufferGeometry(
+      50 * 256,
+      50 * 256,
+      256,
+      256
+    );
+
+    // Define a grey colored material, having smooth shading
+    const material = new THREE.MeshPhongMaterial();
+
+    const displacementMap = new THREE.TextureLoader().load(
+      `./data/${tile.x}-${tile.y}.png`
+    );
+    material.displacementMap = displacementMap;
+    material.displacementScale = 2000;
+
+    // Load the photo texture from the jpg file
+
+    const texture = new THREE.TextureLoader().load(`./data/${tile.x}-${tile.y}.jpg`);
+
+    material.map = texture;
+
+    // Define this to be a Mesh
+    const ground = new THREE.Mesh(geometry, material);
+
+    // By default, the center point for a Mesh is placed at (0, 0, 0)
+    // Here we move the mesh so the lower left corner is at (0, 0, 0) instead
+    const centerX = origin.x + (50 * 256) / 2;
+    const centerY = origin.y + (50 * 256) / 2;
+    ground.position.set(centerX, centerY, 0);
+    return ground;
   }
 
   animate(currentFrametime) {
