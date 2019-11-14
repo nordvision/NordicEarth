@@ -9,7 +9,8 @@ function Header() {
       <h1>NORDIC EARTH</h1>
       <div className="top_navigation_links">
         <Link to="/">Home</Link>
-        <Link to="/instructions">How to do it</Link>
+        <Link to="/instructions">DIY</Link>
+        <Link to="/keys">Key commands</Link>
         <Link to="/maps">Maps</Link>
       </div>
     </div>

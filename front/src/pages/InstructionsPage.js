@@ -11,7 +11,7 @@ function InstructionsPage() {
       <Header />
       <div className="InstructionsPage">
         <div className="InstructionsPage_inner">
-          <h1>Getting things done</h1>
+          <h1>Do it yourself</h1>
           <h2>How to prepare the data files</h2>
           <ol>
             <li>Download height data (from your local mapping agency, probably).</li>

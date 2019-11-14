@@ -5,6 +5,7 @@ import './App.css'
 import MapPage from './pages/MapPage'
 import InstructionsPage from './pages/InstructionsPage'
 import HomePage from './pages/HomePage'
+import KeyCommandsPage from './pages/KeyCommandsPage'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Router>
         <Route path="/instructions" component={InstructionsPage} />
         <Route path="/maps" component={MapPage} />
+        <Route path="/keys" component={KeyCommandsPage} />
         <Route exact path="/" component={HomePage} />
       </Router>
     </div>

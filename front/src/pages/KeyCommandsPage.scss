@@ -1,0 +1,30 @@
+.KeyCommandsPage {
+  color: #f7f7f2;
+  text-align: center;
+  margin-top: 30px;
+
+  .KeyCommandsPage_inner {
+    text-align: left;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  h1,
+  h2 {
+    text-align: center;
+    color: #899878;
+  }
+
+  p {
+    text-align: left;
+    color: #f7f7f2;
+  }
+
+  a {
+    color: bisque;
+
+    &:hover {
+      color: #e4e6c3;
+    }
+  }
+}
