@@ -25,6 +25,13 @@ function rangeMapper([x, y]) {
   return { x: tileX, y: tileY, tileset: tileset.id }
 }
 
+function coordinateToScene([x, y], tile) {
+  const tileX = x - tile.x;
+  const tileY = y - tile.y;
+
+  return { x: tileX, y: tileY};
+}
+
 // rotation rate, in radians per frame
 const ROTATION_SPEED = 0.05;
 
@@ -116,7 +123,7 @@ export default class ThreeModule {
     // Define a grey colored material, having smooth shading
     const material = new THREE.MeshPhongMaterial();
 
-
+    // Find the tile and tileset originCoordinate is on
     const tile = originCoordinate ? rangeMapper(originCoordinate) : defaultTile;
     console.log(`Loading tile ${tile.x}-${tile.y} from ${tile.tileset}`);
     // Load the height map from the png file
@@ -141,6 +148,26 @@ export default class ThreeModule {
 
     // Add the ground to the scene
     this.scene.add(ground);
+
+    if (originCoordinate) {
+      // Create the sign
+      const signPosition = coordinateToScene(originCoordinate, tile);
+      // how tall the sign is
+      const billboardElevation = 1700;
+      // how wide the pole is
+      const billboardPoleWidth = 14;
+      const poleGeometry = new THREE.BoxBufferGeometry(billboardPoleWidth, billboardPoleWidth, billboardElevation)
+      const poleMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff })
+
+      const pole = new THREE.Mesh(poleGeometry, poleMaterial)
+      pole.position.set(
+        signPosition.x,
+        signPosition.y,
+        0
+      )
+
+      this.scene.add(pole)
+    }
 
     // Bind the animate function before using it
     this.animate = this.animate.bind(this);
