@@ -1,18 +1,18 @@
 .InstructionsPage {
-  color: #FFF;
+  color: #f7f7f2;
   text-align: left;
 
   h1,
   h2 {
     text-align: center;
-    color: paleturquoise;
+    color: #899878;
   }
 
   a {
     color: bisque;
 
     &:hover {
-      color: #99ff00;
+      color: #e4e6c3;
     }
   }
 }
