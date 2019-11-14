@@ -1,17 +1,17 @@
 import * as THREE from "three";
 
-const defaultTile = { x: 91250, y: 6973750, tileset: 'norway' };
+const defaultTile = { x: 91250, y: 6973750, tileset: "norway" };
 
 const tilesets = [
   {
-    id: 'sweden',
+    id: "sweden",
     minX: 600000,
     maxX: 800000,
     minY: 6400000,
     maxY: 6700000
   }
   // add norway, denmark here
-]
+];
 
 function rangeMapper([x, y]) {
   let tileset;
@@ -22,14 +22,14 @@ function rangeMapper([x, y]) {
   }
   const tileX = x - ((x - tileset.minX) % (50 * 255));
   const tileY = y - ((y - tileset.minY) % (50 * 255));
-  return { x: tileX, y: tileY, tileset: tileset.id }
+  return { x: tileX, y: tileY, tileset: tileset.id };
 }
 
 function coordinateToScene([x, y], tile) {
   const tileX = x - tile.x;
   const tileY = y - tile.y;
 
-  return { x: tileX, y: tileY};
+  return { x: tileX, y: tileY };
 }
 
 // rotation rate, in radians per frame
@@ -40,7 +40,6 @@ const ROTATION_SPEED = 0.05;
 const ACCELERATION = 50;
 
 export default class ThreeModule {
-
   constructor(ref, originCoordinate) {
     // Set initial speed to zero
     this.speed = 0;
@@ -111,7 +110,7 @@ export default class ThreeModule {
     // Find the tile and tileset originCoordinate is on
     const tile = originCoordinate ? rangeMapper(originCoordinate) : defaultTile;
     console.log(`Loading tile ${tile.x}-${tile.y} from ${tile.tileset}`);
-    const ground = this.createTile(tile, {x: 0, y: 0});
+    const ground = this.createTile(tile, { x: 0, y: 0 });
     // Add the ground to the scene
     this.scene.add(ground);
 
@@ -119,20 +118,132 @@ export default class ThreeModule {
       // Create the sign
       const signPosition = coordinateToScene(originCoordinate, tile);
       // how tall the sign is
-      const billboardElevation = 1700;
+      const billboardElevation = 500;
       // how wide the pole is
       const billboardPoleWidth = 14;
-      const poleGeometry = new THREE.BoxBufferGeometry(billboardPoleWidth, billboardPoleWidth, billboardElevation)
-      const poleMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff })
 
-      const pole = new THREE.Mesh(poleGeometry, poleMaterial)
+      ////// START UGLY BILLBOARD HACK
+
+      this.text = "Russian submarine";
+
+      const billboardPixelHeight = 66;
+      const billboardLineWidth = 7;
+      const billboardFont = "bold 40px Helvetica";
+      const billboardPixelWidthPadding = 60;
+      const billboardPixelMinimumWidth = 140;
+
+      const textureWidth = 512;
+      const textureHeight = 256;
+
+      // scaling factor for billboard texture,
+      // maps pixels (texture) to metres (geometry)
+      const textureScale = 2;
+      const billboardGeometryWidth = textureWidth * textureScale;
+      const billboardGeometryHeight = textureHeight * textureScale;
+
+      this.textureCanvas = document.createElement("canvas");
+      this.ctx = this.textureCanvas.getContext("2d");
+      this.textureCanvas.width = textureWidth;
+      this.textureCanvas.height = textureHeight;
+
+      // clear the canvas
+      this.ctx.clearRect(
+        0,
+        0,
+        this.textureCanvas.width,
+        this.textureCanvas.height
+      );
+
+      // set background color to black
+      // NB color info is reused as alpha mask (black = transparent)
+      this.ctx.fillStyle = "black";
+      this.ctx.fillRect(
+        0,
+        0,
+        this.textureCanvas.width,
+        this.textureCanvas.height
+      );
+
+      this.ctx.textAlign = "center";
+      this.ctx.textBaseline = "middle";
+
+      // set text color to white
+      // NB color info is reused as alpha mask (white = opaque)
+      this.ctx.fillStyle = "white";
+      this.ctx.font = billboardFont;
+      this.ctx.fillText(
+        this.text,
+        this.textureCanvas.width / 2,
+        this.textureCanvas.height / 2
+      );
+
+      // measure effective text size in pixels
+      const textSize = this.ctx.measureText(this.text);
+      let billboardPixelWidth = textSize.width + billboardPixelWidthPadding;
+      // pad short names so billboards become wide and not quadratic
+      if (billboardPixelWidth < billboardPixelMinimumWidth) {
+        billboardPixelWidth += 20;
+      }
+
+      // draw border onto billboard
+      this.ctx.lineWidth = billboardLineWidth;
+      this.ctx.strokeStyle = "white";
+      this.ctx.strokeRect(
+        this.textureCanvas.width / 2 - billboardPixelWidth / 2,
+        this.textureCanvas.height / 2 - billboardPixelHeight / 2,
+        billboardPixelWidth,
+        billboardPixelHeight
+      );
+
+      // use canvas contents as texture
+      const texture = new THREE.Texture(this.textureCanvas);
+      texture.needsUpdate = true;
+
+      const billboardGeometry = new THREE.PlaneBufferGeometry(
+        billboardGeometryWidth,
+        billboardGeometryHeight
+      );
+      const billboardMaterial = new THREE.MeshBasicMaterial();
+      billboardMaterial.transparent = true;
+      billboardMaterial.map = texture;
+      billboardMaterial.alphaMap = texture;
+
+      const billboard = new THREE.Mesh(billboardGeometry, billboardMaterial);
+      billboard.position.set(
+        signPosition.x,
+        signPosition.y,
+        billboardElevation
+      );
+      billboard.up = new THREE.Vector3(0, 0, 1);
+
+      billboard.lookAt(
+        this.camera.position.x,
+        this.camera.position.y,
+        billboard.position.z
+      );
+
+      this.scene.add(billboard);
+
+      ////// END UGLY BILLBOARD HACK
+
+      const poleGeometry = new THREE.BoxBufferGeometry(
+        billboardPoleWidth,
+        billboardPoleWidth,
+        billboardElevation
+      );
+      const poleMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+      const pole = new THREE.Mesh(poleGeometry, poleMaterial);
+
       pole.position.set(
         signPosition.x,
         signPosition.y,
-        0
-      )
+        billboardElevation / 2 -
+          (billboardPixelHeight * textureScale) / 2 -
+          (billboardLineWidth * textureScale) / 2
+      );
 
-      this.scene.add(pole)
+      this.scene.add(pole);
     }
 
     // Bind the animate function before using it
@@ -164,7 +275,9 @@ export default class ThreeModule {
 
     // Load the photo texture from the jpg file
 
-    const texture = new THREE.TextureLoader().load(`./data/${tile.x}-${tile.y}.jpg`);
+    const texture = new THREE.TextureLoader().load(
+      `./data/${tile.x}-${tile.y}.jpg`
+    );
 
     material.map = texture;
 
