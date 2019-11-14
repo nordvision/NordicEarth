@@ -11,6 +11,7 @@ function Header() {
         <Link to="/">Home</Link>
         <Link to="/instructions">How to do it</Link>
         <Link to="/maps">Maps</Link>
+        <Link to="/groupmap">Bonus</Link>
       </div>
     </div>
   )

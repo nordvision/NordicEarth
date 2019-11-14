@@ -8,7 +8,12 @@ class MapPage extends Component {
   }
 
   componentDidMount() {
-    new ThreeModule(this.mapRef);
+    new ThreeModule({
+      ref: this.mapRef.current,
+      displacementScale: 2000,
+      imageMap: "./data/91250-6973750.jpg", // "./data/team1_bw.png",
+      textureMap: "./data/91250-6973750.png" //"./data/team1.png"
+    });
   }
 
   render() {
