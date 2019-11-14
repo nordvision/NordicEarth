@@ -1,10 +1,12 @@
 import React from 'react'
 
+import './InstructionsPage.css'
+
 /* eslint-disable max-len */
 
 function InstructionsPage() {
   return (
-    <div>
+    <div className="InstructionsPage">
       <h1>Getting things done</h1>
       <h2>How to prepare the data files</h2>
       <ol>
