@@ -4,6 +4,9 @@ import './HomePage.scss'
 import Header from '../Header'
 import team1Image from '../assets/team1.png'
 import team2Image from '../assets/team2.png'
+import hmWireframe from '../assets/hm_wireframe.png'
+import hmOverflate from '../assets/hm_overflate.png'
+import hmTekstur from '../assets/hm_tekstur.png'
 
 /* eslint-disable max-len */
 
@@ -23,6 +26,10 @@ function HomePage() {
           <h2>Meet the geniuses behind this project</h2>
           <img alt="geniuses 1" src={team1Image} />
           <img alt="geniuses 2" src={team2Image} />
+          <h2>Extreme topography</h2>
+          <img alt="height map wireframe" src={hmWireframe} />
+          <img alt="height map overflate" src={hmOverflate} />
+          <img alt="height map texture" src={hmTekstur} />
         </div>
       </div>
     </div>
