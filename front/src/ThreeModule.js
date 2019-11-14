@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-const defaultTile = { x: 91250, y: 6973750, tileset: "norway" };
+const defaultCoordinate = [91250, 6973750];
 
 const tilesets = [
   {
@@ -8,21 +8,37 @@ const tilesets = [
     minX: 600000,
     maxX: 800000,
     minY: 6400000,
-    maxY: 6700000
+    maxY: 6700000,
+    scale: 6000
+  },
+  {
+    id: "norway",
+    minX: 91250,
+    maxX: 92000,
+    minY: 6973750,
+    maxY: 6980000,
+    scale: 2000
+  },
+  {
+    id: "denmark",
+    minX: 306148,
+    maxX: 330000,
+    minY: 6170538,
+    maxY: 6200000,
+    scale: 2000
   }
-  // add norway, denmark here
 ];
 
 function rangeMapper([x, y]) {
   let tileset;
   for (const ts of tilesets) {
-    if (ts.minX < x && x < ts.maxX && ts.minY < y && y < ts.maxY) {
+    if (ts.minX <= x && x <= ts.maxX && ts.minY <= y && y <= ts.maxY) {
       tileset = ts;
     }
   }
   const tileX = x - ((x - tileset.minX) % (50 * 255));
   const tileY = y - ((y - tileset.minY) % (50 * 255));
-  return { x: tileX, y: tileY, tileset: tileset.id };
+  return { x: tileX, y: tileY, tileset };
 }
 
 function coordinateToScene([x, y], tile) {
@@ -108,8 +124,10 @@ export default class ThreeModule {
     // this.scene.add(helper);
 
     // Find the tile and tileset originCoordinate is on
-    const tile = originCoordinate ? rangeMapper(originCoordinate) : defaultTile;
-    console.log(`Loading tile ${tile.x}-${tile.y} from ${tile.tileset}`);
+    const tile = originCoordinate
+      ? rangeMapper(originCoordinate)
+      : rangeMapper(defaultCoordinate);
+    console.log(`Loading tile ${tile.x}-${tile.y} from ${tile.tileset.id}`);
     const ground = this.createTile(tile, { x: 0, y: 0 });
     // Add the ground to the scene
     this.scene.add(ground);
@@ -271,7 +289,7 @@ export default class ThreeModule {
       `./data/${tile.x}-${tile.y}.png`
     );
     material.displacementMap = displacementMap;
-    material.displacementScale = 2000;
+    material.displacementScale = tile.tileset.scale;
 
     // Load the photo texture from the jpg file
 

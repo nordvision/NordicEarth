@@ -10,12 +10,12 @@ class MapPage extends Component {
   componentDidMount() {
     new ThreeModule({
       ref: this.mapRef.current,
-      displacementScale: 100,
+      displacementScale: 30,
       imageMap: "./data/team1.png",
       textureMap: "./data/team1_bw.png",
-      groundPosX: 0,
-      groundPosY: 0,
-      groundPosZ: 0
+      // groundPosX: 0,
+      // groundPosY: 0,
+      // groundPosZ: 0
     });
   }
 
