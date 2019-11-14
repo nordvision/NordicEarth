@@ -24,8 +24,8 @@ It can read _many_ data formats: https://gdal.org/drivers/raster/index.html
 
 Tips:
 
-- Use gdalinfo to extract information about files, and just to see whether GDAL can open/read the contents
-- Use gdal_translate to extract a given region from a large file
+- Use `gdalinfo` to extract information about files, and just to see whether GDAL can open/read the contents
+- Use `gdal_translate` to extract a given region from a large file
 
 Here is an example of a full command line converting GeoTIFF height data to a greyscale png file:
 
