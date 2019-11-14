@@ -37,8 +37,10 @@ export default class ThreeModule {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     document.body.appendChild(this.renderer.domElement);
 
+    this.resizeHandler = this.resizeHandler.bind(this);
+
     //        window.addEventListener("keydown", keyboardHandler);
-    //        window.addEventListener("resize", resizeHandler, false);
+    window.addEventListener("resize", this.resizeHandler, false);
 
     // For now, lets render three lines describing the x, y and z axes
     const helper = new THREE.AxesHelper(1000);
@@ -52,11 +54,19 @@ export default class ThreeModule {
     this.scene.add(ground);
 
     this.animate = this.animate.bind(this);
+
     this.animate();
   }
 
   animate() {
     requestAnimationFrame(this.animate);
     this.renderer.render(this.scene, this.camera);
+  }
+
+  resizeHandler() {
+    debugger;
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 }
