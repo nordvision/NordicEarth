@@ -13,6 +13,7 @@ function Header() {
         <Link to="/keys">Key commands</Link>
         <Link to="/maps">Map of Molde</Link>
         <Link to="/maps?gps=59.357826,17.785493">Map of Stockholm</Link>
+        <Link to="/maps?gps=55.668677,12.073107">Map of Roskilde</Link>
         <Link to="/bonusmap">Bonus</Link>
       </div>
     </div>

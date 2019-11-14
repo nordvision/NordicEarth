@@ -18,8 +18,15 @@ const tilesets = [
     minY: 6973750,
     maxY: 6980000,
     scale: 2000
+  },
+  {
+    id: 'denmark',
+    minX: 306148,
+    maxX: 330000,
+    minY: 6170538,
+    maxY: 6200000,
+    scale: 2000
   }
-  // add norway, denmark here
 ]
 
 function rangeMapper([x, y]) {
