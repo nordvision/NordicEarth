@@ -1,29 +1,5 @@
 import * as THREE from "three";
 
-const defaultTile = { x: 91250, y: 6973750, tileset: 'norway' };
-
-const tilesets = [
-  {
-    id: 'sweden',
-    minX: 600000,
-    maxX: 800000,
-    minY: 6400000,
-    maxY: 6700000
-  }
-  // add norway, denmark here
-]
-
-function rangeMapper([x, y]) {
-  let tileset;
-  for (const ts of tilesets) {
-    if (ts.minX < x && x < ts.maxX && ts.minY < y && y < ts.maxY) {
-      tileset = ts;
-    }
-  }
-  const tileX = x - ((x - tileset.minX) % (50 * 255));
-  const tileY = y - ((y - tileset.minY) % (50 * 255));
-  return { x: tileX, y: tileY, tileset: tileset.id }
-}
 
 // rotation rate, in radians per frame
 const ROTATION_SPEED = 0.05;
@@ -37,7 +13,7 @@ export default class ThreeModule {
   constructor(props) {
 
     // Set initial speed to zero
-    this.speed = 0;
+    this.speed = -100;
 
     // Store a time stamp when a new rendering starts
     this.frametime = 0;
@@ -63,12 +39,12 @@ export default class ThreeModule {
     );
 
     // Define the initial camera position (x, y, z)
-    this.camera.position.set(5000, 5000, 500);
+    this.camera.position.set(6000, 6500, 1200);
 
     // Fix up the camera coordinate conventions - so that the
     // x and y coordinates run along the surface of our terrain
     // and z describes the height
-    this.camera.rotateX(Math.PI / 2);
+    this.camera.rotateX(Math.PI / 4);
     this.camera.up = new THREE.Vector3(0, 0, 1);
 
     // Set up WebGL and attach a canvas element to the DOM
