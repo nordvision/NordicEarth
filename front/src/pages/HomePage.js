@@ -1,4 +1,7 @@
 import React from 'react'
+import {
+  Link
+} from 'react-router-dom'
 
 import './HomePage.scss'
 import Header from '../Header'
@@ -28,7 +31,9 @@ function HomePage() {
           <br />
           <br />
           <br />
-          <img alt="geniuses 2" src={team2Image} />
+          <Link to="/bonusmap">
+            <img alt="geniuses 2" src={team2Image} />
+          </Link>
         </div>
       </div>
     </div>

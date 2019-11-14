@@ -10,11 +10,10 @@ function Header() {
       <div className="top_navigation_links">
         <Link to="/">Home</Link>
         <Link to="/instructions">DIY</Link>
-        <Link to="/keys">Key commands</Link>
-        <Link to="/maps">Map of Molde</Link>
-        <Link to="/maps?gps=59.357826,17.785493">Map of Stockholm</Link>
-        <Link to="/maps?gps=55.668677,12.073107">Map of Roskilde</Link>
-        <Link to="/bonusmap">Bonus</Link>
+        <Link to="/keys">Keys</Link>
+        <Link to="/maps">Molde</Link>
+        <Link to="/maps?gps=59.357826,17.785493">Stockholm</Link>
+        <Link to="/maps?gps=55.668677,12.073107">Roskilde</Link>
       </div>
     </div>
   )
