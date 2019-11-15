@@ -104,7 +104,8 @@ export default class ThreeModule {
     this.renderer = new THREE.WebGLRenderer();
 
     // Set a background color: Simulate sky blue
-    this.renderer.setClearColor(new THREE.Color(0.5, 0.6, 0.8), 1);
+    const skyColor = new THREE.Color(0.5, 0.6, 0.8);
+    this.renderer.setClearColor(skyColor, 1);
 
     // Set the canvas element to be full screen
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -113,7 +114,10 @@ export default class ThreeModule {
     this.renderer.setPixelRatio(window.devicePixelRatio);
 
     // Add horizon
-    //this.createHorizon();
+    this.createHorizon();
+    const near = 1000;
+    const far = TILE_SIZE*3;
+    this.scene.fog = new THREE.Fog(skyColor, near, far);
 
     // Add the canvas element Three.js renders to onto the DOM
     ref.current.appendChild(this.renderer.domElement);
@@ -153,7 +157,7 @@ export default class ThreeModule {
     if (originCoordinate) {
       const targetCoordinate = coordinateToScene(originCoordinate, tile);
       this.createPole(targetCoordinate, tile.tileset.text);
-      //this.camera.lookAt(new THREE.Vector3(targetCoordinate.x, targetCoordinate.y, 0))
+      this.camera.lookAt(new THREE.Vector3(targetCoordinate.x, targetCoordinate.y, 0))
     }
 
 
@@ -168,21 +172,11 @@ export default class ThreeModule {
       TILE_SIZE*10
     );
 
-    let tex = new THREE.TextureLoader().load("./data/background-pattern.jpg")
-    tex.anisotropy = 32
-    tex.repeat.set(10, 10)
-    tex.wrapT = THREE.RepeatWrapping
-    tex.wrapS = THREE.RepeatWrapping
-    const mat = new THREE.MeshLambertMaterial({
-      map: tex,
-      color: new THREE.Color(0.5, 0.6, 0.8)
-    })
-
     // Define a grey colored material, having smooth shading
-    //const material = new THREE.MeshLambertMaterial({color: new THREE.Color(0.4, 0.5, 0.7)});
+    const material = new THREE.MeshLambertMaterial({color: new THREE.Color(0.45, 0.5, 0.7)});
 
     // Define this to be a Mesh
-    const horizon = new THREE.Mesh(geometry, mat);
+    const horizon = new THREE.Mesh(geometry, material);
     horizon.position.set(0, 0, -1);
     this.scene.add(horizon);
   }
