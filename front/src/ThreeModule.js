@@ -114,10 +114,7 @@ export default class ThreeModule {
     this.renderer.setPixelRatio(window.devicePixelRatio);
 
     // Add horizon
-    this.createHorizon();
-    const near = 1000;
-    const far = TILE_SIZE*3;
-    this.scene.fog = new THREE.Fog(skyColor, near, far);
+    this.createHorizon(skyColor);
 
     // Add the canvas element Three.js renders to onto the DOM
     ref.current.appendChild(this.renderer.domElement);
@@ -148,7 +145,7 @@ export default class ThreeModule {
     for (const x of [-1, 0, 1]) {
       for (const y of [-1, 0, 1]) {
         if (x !== 0 || y !== 0) {
-          this.createTile({...tile, x: tile.x + x*TILE_SIZE, y: tile.y + y*TILE_SIZE}, {x,y});
+          this.createTile({...tile, x: tile.x + x*TILE_RESOLUTION*255, y: tile.y + y*TILE_RESOLUTION*255}, {x,y});
         }
       }
     }
@@ -156,7 +153,8 @@ export default class ThreeModule {
 
     if (originCoordinate) {
       const targetCoordinate = coordinateToScene(originCoordinate, tile);
-      this.createPole(targetCoordinate, tile.tileset.text);
+      this.createSign(targetCoordinate, tile.tileset.text);
+      // Turn camera to look at sign
       this.camera.lookAt(new THREE.Vector3(targetCoordinate.x, targetCoordinate.y, 0))
     }
 
@@ -166,19 +164,23 @@ export default class ThreeModule {
     this.animate(); 
   }
 
-  createHorizon() {
+  createHorizon(skyColor) {
     const geometry = new THREE.PlaneBufferGeometry(
       TILE_SIZE*10,
       TILE_SIZE*10
     );
 
-    // Define a grey colored material, having smooth shading
     const material = new THREE.MeshLambertMaterial({color: new THREE.Color(0.45, 0.5, 0.7)});
 
-    // Define this to be a Mesh
     const horizon = new THREE.Mesh(geometry, material);
+    // Put the horizon below the terrain
     horizon.position.set(0, 0, -100);
     this.scene.add(horizon);
+
+    // Fade the horizon with fog based on camera distance
+    const near = TILE_SIZE;
+    const far = TILE_SIZE*3;
+    this.scene.fog = new THREE.Fog(skyColor, near, far);
   }
 
   createTile(tile, origin) {
@@ -218,6 +220,7 @@ export default class ThreeModule {
       `./data/${tile.x}-${tile.y}.jpg`,
       (texture) => {
         material.map = texture;
+        material.fog = false;
         // Only add the ground to the scene if there is a texture
         this.scene.add(ground)
       },
@@ -226,7 +229,7 @@ export default class ThreeModule {
     );
   }
 
-  createPole(coordinate, text) {
+  createSign(coordinate, text) {
     // Create the sign
     const signPosition = coordinate;
     // how tall the sign is
