@@ -177,7 +177,7 @@ export default class ThreeModule {
 
     // Define this to be a Mesh
     const horizon = new THREE.Mesh(geometry, material);
-    horizon.position.set(0, 0, -1);
+    horizon.position.set(0, 0, -100);
     this.scene.add(horizon);
   }
 
