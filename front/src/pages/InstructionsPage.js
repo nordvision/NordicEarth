@@ -69,7 +69,7 @@ function InstructionsPage() {
               a large file.
             </li>
           </ul>
-          <h2>Using GDAL - part 1</h2>
+          <h2>Using GDAL - part 1: Elevation data</h2>
           <ul>
             <li>
               Here is an example of a full command line converting a GeoTIFF
@@ -117,42 +117,42 @@ function InstructionsPage() {
               <strong>output.png</strong> the output file name.
             </li>
           </ul>
-          <h2>Using GDAL - part 2</h2>
+          <h2>Using GDAL - part 2: Sentinel photos</h2>
           <ul>
             <li>
-              To use matching satellite imagery, first download a Sentinel zip <a href="https://apps.sentinel-hub.com/eo-browser/">file</a>.
-              Unzip the file. There should be a subdirectory called GRANULE
-              there. Go there, and to its subdirectory (having a long, cryptic
-              name, like L1C_T33UUB_A013819_20191029T102039), and go to the
-              IMG_DATA subdirectory beneath it.
+              To use matching satellite imagery, first create a user account
+              here: https://scihub.copernicus.eu/dhus/ Then you can download a
+              zip <a href="https://apps.sentinel-hub.com/eo-browser/">file</a>{" "}
+              with satellite imagery. Unzip the file. There should be a
+              subdirectory called GRANULE there. Go there, and to its
+              subdirectory (having a long, cryptic name, like
+              L1C_T33UUB_A013819_20191029T102039), and go to the IMG_DATA
+              subdirectory beneath it.
             </li>
             <li>
               The file that ends with TCI.jp2 has the natural color information.
-              This is a file in JPEG2000 format, something which GDAL
-              unfortunately is not able to read.
+              This is a file in JPEG2000 format. Some GDAL distributions are
+              unfortunately not able to read out the contents correctly.
             </li>
             <li>
-              A solution could be to try to convert the jp2 file to a different
-              file format (for example GeoTIFF) and read out the projection
-              information (the text which is shown when you use `gdalinfo` on a
-              file). The Preview application is macOS can read the jp2 file and
-              write a TIFF file. And then apply the projection information onto
-              the TIFF file.
+              A workaround is to convert the jp2 file to a different file format
+              (for example tiff). The Preview application on macOS can do this.
+              Then, extract the metadata information using `gdalinfo` (this
+              works, GDAL struggles in reading the image contents, but not
+              metadata) and apply the projection information onto the TIFF file.
             </li>
             <li>
-              The idea is then to extract the extents information from the
-              height data source file and reapply the same extents information
-              onto the satellite data file. This way they will match.
-              `gdal_translate` and the `-projwin ` option should be used to crop
-              the input image to spesific geographical coordinates.
+              Now you can extract the extents information from the height data
+              source file and crop the satellite data file to the same extents.
+              This way they will match.
             </li>
             <li>
-              We did not succeed in extracting and matching raw Sentinel data.
+              See HOWTO_SATELLITE_PHOTOS.txt in the source repository for more
+              details.
             </li>
             <li>
-              Final note: The satellite image size should preferably be somewhat
-              higher than the height map - for example 1024 by 1024 pixels. We
-              did not succeed in extracting and matching raw Sentinel data.
+              Final note: The satellite image size should be higher than the
+              height map - for example 1024 by 1024 pixels.
             </li>
           </ul>
         </div>

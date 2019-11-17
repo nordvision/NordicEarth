@@ -1,0 +1,53 @@
+Making satellite photo (from Sentinel) match elevation data
+
+Create a user account here: https://scihub.copernicus.eu/dhus/
+Go to https://apps.sentinel-hub.com/eo-browser/ and download a suitable file
+
+Unzip the file, go to ./GRANULE/(...long name...)/IMG_DATA. The *TCI.jp2 file is the color image.
+
+Open the jp2 in macOS preview, and save the file as TIFF. It will now lose its metadata.
+We will restore them in the next steps.
+
+Read out metadata from the jp2 using gdalinfo.
+
+- Use the last entry under Coordinate system. Example:
+   AUTHORITY["EPSG","32633"]]
+- Use Corner coordinates. Example:
+  Upper Left ( 300000.000, 6200040.000) ( 11d48' 1.84"E, 55d54'15.00"N)
+  Lower Right ( 409800.000, 6090240.000) ( 13d35'29.76"E, 54d57' 3.39"N)
+
+Using gdal_translate you can overwrite metadata for a file:
+-a_srs
+   Set the projection
+-a_ullr <ulx> <uly> <lrx> <lry>
+   Set the corner points (upper left x,y + lower right x,y)
+
+We can now update the TIFF file with values from the jp2-file. Example:
+
+gdal_translate -a_srs EPSG:32633 -a_ullr 300000 6200040 409800 6090240 source.tiff source_with_metadata.tiff
+
+We will now reproject (warp) and cut (crop) the satellite photo so it matches the elevation data file.
+
+Use gdalinfo to read metadata from the elevation file:
+
+- Use the last entry under Coordinate system. Example:
+  AUTHORITY["EPSG","25832"]]
+- Use Corner coordinates. Example:
+  Upper Left ( 690000.000, 6180000.000) ( 12d 1'32.79"E, 55d43'42.26"N)
+  Lower Left ( 690000.000, 6170000.000) ( 12d 1' 7.86"E, 55d38'19.24"N)
+  Upper Right ( 700000.000, 6180000.000) ( 12d11' 5.13"E, 55d43'27.78"N)
+  Lower Right ( 700000.000, 6170000.000) ( 12d10'38.89"E, 55d38' 4.80"N)
+
+Using gdalwarp you can do reprojection and cropping:
+-t_srs <srs_def>
+   Re-project image contents to new map projection
+-te <xmin ymin xmax ymax>
+   Crop image to corner points (coordinates refer to the new projection)
+
+Use values from the elevation file as parameters for gdalwarp:
+
+gdalwarp -t_srs EPSG:25832 -te 690000 6170000 700000 6180000 source_with_metadata.tiff texture.tiff
+
+The texture.tiff file now matches the elevation data file.
+
+Convert the texture.tiff file to a jpg and use it as a texture.
