@@ -27,7 +27,7 @@ const tilesets = [
     maxX: 330000,
     minY: 6170538,
     maxY: 6200000,
-    scale: 2000,
+    scale: 200,
     text: "Roskilde"
   }
 ];
@@ -145,32 +145,41 @@ export default class ThreeModule {
     for (const x of [-1, 0, 1]) {
       for (const y of [-1, 0, 1]) {
         if (x !== 0 || y !== 0) {
-          this.createTile({...tile, x: tile.x + x*TILE_RESOLUTION*255, y: tile.y + y*TILE_RESOLUTION*255}, {x,y});
+          this.createTile(
+            {
+              ...tile,
+              x: tile.x + x * TILE_RESOLUTION * 255,
+              y: tile.y + y * TILE_RESOLUTION * 255
+            },
+            { x, y }
+          );
         }
       }
     }
-    
 
     if (originCoordinate) {
       const targetCoordinate = coordinateToScene(originCoordinate, tile);
       this.createSign(targetCoordinate, tile.tileset.text);
       // Turn camera to look at sign
-      this.camera.lookAt(new THREE.Vector3(targetCoordinate.x, targetCoordinate.y, 0))
+      this.camera.lookAt(
+        new THREE.Vector3(targetCoordinate.x, targetCoordinate.y, 0)
+      );
     }
-
 
     // Bind the animate function before using it
     this.animate = this.animate.bind(this);
-    this.animate(); 
+    this.animate();
   }
 
   createHorizon(skyColor) {
     const geometry = new THREE.PlaneBufferGeometry(
-      TILE_SIZE*10,
-      TILE_SIZE*10
+      TILE_SIZE * 10,
+      TILE_SIZE * 10
     );
 
-    const material = new THREE.MeshLambertMaterial({color: new THREE.Color(0.45, 0.5, 0.7)});
+    const material = new THREE.MeshLambertMaterial({
+      color: new THREE.Color(0.45, 0.5, 0.7)
+    });
 
     const horizon = new THREE.Mesh(geometry, material);
     // Put the horizon below the terrain
@@ -179,7 +188,7 @@ export default class ThreeModule {
 
     // Fade the horizon with fog based on camera distance
     const near = TILE_SIZE;
-    const far = TILE_SIZE*3;
+    const far = TILE_SIZE * 3;
     this.scene.fog = new THREE.Fog(skyColor, near, far);
   }
 
@@ -210,19 +219,19 @@ export default class ThreeModule {
 
     // By default, the center point for a Mesh is placed at (0, 0, 0)
     // Here we move the mesh so the lower left corner is at (0, 0, 0) instead
-    const centerX = origin.x*(TILE_SIZE) + (TILE_SIZE) / 2;
-    const centerY = origin.y*(TILE_SIZE) + (TILE_SIZE) / 2;
+    const centerX = origin.x * TILE_SIZE + TILE_SIZE / 2;
+    const centerY = origin.y * TILE_SIZE + TILE_SIZE / 2;
     ground.position.set(centerX, centerY, 0);
 
     // Initiate loading the photo texture from the jpg file
 
     new THREE.TextureLoader().load(
       `./data/${tile.x}-${tile.y}.jpg`,
-      (texture) => {
+      texture => {
         material.map = texture;
         material.fog = false;
         // Only add the ground to the scene if there is a texture
-        this.scene.add(ground)
+        this.scene.add(ground);
       },
       undefined,
       undefined
@@ -324,11 +333,7 @@ export default class ThreeModule {
     billboardMaterial.alphaMap = texture;
 
     const billboard = new THREE.Mesh(billboardGeometry, billboardMaterial);
-    billboard.position.set(
-      signPosition.x,
-      signPosition.y,
-      billboardElevation
-    );
+    billboard.position.set(signPosition.x, signPosition.y, billboardElevation);
     billboard.up = new THREE.Vector3(0, 0, 1);
 
     billboard.lookAt(
